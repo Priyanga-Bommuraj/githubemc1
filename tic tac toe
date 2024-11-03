@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f5;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    #game-board {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      background-color: #fff;
+      border: 2px solid #ccc;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .cell:hover {
+      background-color: #f9f9f9;
+    }
+
+    .cell.X {
+      color: #ff6347;
+    }
+
+    .cell.O {
+      color: #4682b4;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 1.2rem;
+    }
+
+    .reset-button {
+      margin-top: 10px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      background-color: #4682b4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .reset-button:hover {
+      background-color: #4169e1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tic Tac Toe</h1>
+    <div id="game-board"></div>
+    <div class="status" id="status"></div>
+    <button class="reset-button" onclick="resetGame()">Restart Game</button>
+  </div>
+
+  <script>
+    const board = Array(9).fill(null);
+    let currentPlayer = 'X';
+    const winningCombinations = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    const gameBoard = document.getElementById('game-board');
+    const statusText = document.getElementById('status');
+
+    function createBoard() {
+      gameBoard.innerHTML = '';
+      board.forEach((_, index) => {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        cell.addEventListener('click', () => handleCellClick(index));
+        gameBoard.appendChild(cell);
+      });
+      updateStatus();
+    }
+
+    function handleCellClick(index) {
+      if (!board[index] && !checkWinner()) {
+        board[index] = currentPlayer;
+        const cell = gameBoard.children[index];
+        cell.textContent = currentPlayer;
+        cell.classList.add(currentPlayer);
+
+        if (checkWinner()) {
+          updateStatus(${currentPlayer} wins!);
+        } else if (board.every(cell => cell)) {
+          updateStatus("It's a draw!");
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          updateStatus();
+        }
+      }
+    }
+
+    function checkWinner() {
+      return winningCombinations.some(combination =>
+        combination.every(index => board[index] === currentPlayer)
+      );
+    }
+
+    function updateStatus(message = Player ${currentPlayer}'s turn) {
+      statusText.textContent = message;
+    }
+
+    function resetGame() {
+      board.fill(null);
+      currentPlayer = 'X';
+      createBoard();
+    }
+
+    createBoard();
+  </script>
+</body>
+</html>
